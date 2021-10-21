@@ -1,3 +1,4 @@
+(import sh)
 
 (defn key_by_value [strct value]
   "Get key from table/struct by value"
