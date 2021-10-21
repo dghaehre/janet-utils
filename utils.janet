@@ -30,3 +30,9 @@
   (def setups (reduce2 (fn [a b] (string a "\n" b)) (values alternatives)))
   (def chosen-value (sh/$< echo -e ,setups | fzf --prompt ,prmpt))
   (key_by_value alternatives (string/trim chosen-value)))
+
+(defn fish [s]
+  ```
+  Run command as fish shell
+  ```
+  (os/execute @("/usr/bin/fish" "-c" s) :e))
