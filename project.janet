@@ -8,4 +8,4 @@
   :dependencies ["https://github.com/andrewchambers/janet-sh.git"])
 
 (declare-source
-  :source ["utils.janet"])
+  :source ["utils.janet" "fzf.janet"])

@@ -1,8 +1,4 @@
-(import sh)
-
-
-
-(defn key_by [pred strct]
+(defn key-by [pred strct]
   ```
   Get key from table/struct by a predicate that takes
   two arguments [key value] and return a boolean.
@@ -14,60 +10,60 @@
       (set chosen-key key)))
   chosen-key)
 
-
-
-(defn key_by_value [strct value]
+(defn key-by-value [strct value]
   ```
   Get key from table/struct by matching on given value.
   Return nil if not found.
   ```
-  (key_by (fn [_ val] (= val value)) strct))
-
-
-
-
-(defn fzf [alternatives prmpt]
-  ```
-  Simple fzf wrapper
-
-  Takes a struct with key and values and returns the key that is chosen.
-  The values will be shown to the user.
-  ```
-  (var chosen-key :error)
-  (def setups (reduce2 (fn [a b] (string a "\n" b)) (values alternatives)))
-  (def chosen-value (sh/$< echo -e ,setups | fzf --prompt ,prmpt))
-  (key_by_value alternatives (string/trim chosen-value)))
-
-
-
-(defn fzfn [prmpt alternatives]
-  ```
-  fzf wrapper
-
-  Does not return anything, but runs the corresponding function.
-
-  alternatives example:
-  {"one"   '(print "one")
-   "two"   '(print "something else")}
-
-  Takes a struct with key and values and returns the key that is chosen.
-  The values will be shown to the user.
-  ```
-  (def setups
-    # Uses the _key_ in the struct to show to the user as an option
-    (->> (keys alternatives)
-         (reduce2 |(string $0 "\n" $1))))
-
-  (def chosen-value
-    (->> (sh/$< echo -e ,setups | fzf --prompt ,prmpt)
-         (string/trim)))
-
-  (eval (get alternatives chosen-value)))
-
-
+  (key-by |(= $1 value) strct))
 
 (defn fish [s]
   ```
   Run command as fish shell
   ```
   (os/execute @("/usr/bin/fish" "-c" s) :e))
+
+(defmacro with-exit
+  "Exit if there was an error"
+  [& body]
+  ~(try ,body ([_] (os/exit 0))))
+
+(defmacro no-err
+  "Error is fine"
+  [& body]
+  ~(try ,body ([_] ())))
+
+(defmacro with-err
+  "Map possible error"
+  [err & body]
+  ~(try ,;body ([_] (error ,err))))
+
+(defn elem [arr pred]
+  "Check in elem exist in array"
+  (var exist false)
+  (each e arr
+    (if (pred e)
+      (set exist true)))
+  exist)
+
+(defn end [arr &opt none]
+  `Take last element of list`
+  (get arr (- (length arr) 1) none))
+
+(defn map-indexed [f ds]
+  ```
+  A map that also provide an index
+  (map-indexed (fn [i v] [i v] ) ["a" "b" "c" "d"])
+  ```
+  (map f (range 0 (length ds)) ds))
+
+(defmacro flip [f & args]
+  ```
+  Flip argument for the given function.
+  Last argument becomes the first.
+  Second argument becomes second.
+  Third becomes third etc.
+
+  (flip map [1 2 3] (fn [i] (+ 1 i)))
+  ```
+  ~(,f ,(end args) ,;(drop 1 (reverse args))))
