@@ -1,26 +1,29 @@
-(defn key-by [pred strct]
+(defn key-by
   ```
   Get key from table/struct by a predicate that takes
   two arguments [key value] and return a boolean.
   Return nil if not found.
   ```
+  [pred strct]
   (var chosen-key nil)
   (loop [[key val] :in (pairs strct)] 
     (if (pred key val)
       (set chosen-key key)))
   chosen-key)
 
-(defn key-by-value [strct value]
+(defn key-by-value
   ```
   Get key from table/struct by matching on given value.
   Return nil if not found.
   ```
+  [strct value]
   (key-by |(= $1 value) strct))
 
-(defn fish [s]
+(defn fish
   ```
   Run command as fish shell
   ```
+  [s]
   (os/execute @("/usr/bin/fish" "-c" s) :e))
 
 (defmacro with-exit
@@ -38,26 +41,29 @@
   [err & body]
   ~(try ,;body ([_] (error ,err))))
 
-(defn elem [arr pred]
+(defn elem
   "Check in elem exist in array"
+  [arr pred]
   (var exist false)
   (each e arr
     (if (pred e)
       (set exist true)))
   exist)
 
-(defn end [arr &opt none]
+(defn end
   `Take last element of list`
+  [arr &opt none]
   (get arr (- (length arr) 1) none))
 
-(defn map-indexed [f ds]
+(defn map-indexed
   ```
   A map that also provide an index
   (map-indexed (fn [i v] [i v] ) ["a" "b" "c" "d"])
   ```
+  [f ds]
   (map f (range 0 (length ds)) ds))
 
-(defmacro flip [f & args]
+(defmacro flip
   ```
   Flip argument for the given function.
   Last argument becomes the first.
@@ -66,4 +72,5 @@
 
   (flip map [1 2 3] (fn [i] (+ 1 i)))
   ```
+  [f & args]
   ~(,f ,(end args) ,;(drop 1 (reverse args))))
