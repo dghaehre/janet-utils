@@ -55,6 +55,11 @@
   [arr &opt none]
   (get arr (- (length arr) 1) none))
 
+(defn tail
+  `Return list without head`
+  [arr]
+  (array/slice arr 1 (length arr)))
+
 (defn map-indexed
   ```
   A map that also provide an index
