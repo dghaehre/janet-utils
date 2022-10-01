@@ -58,7 +58,9 @@
 (defn tail
   `Return list without head`
   [arr]
-  (array/slice arr 1 (length arr)))
+  (let [end (length arr)
+        start (if (> end 1) 1 0)]
+    (array/slice arr start end)))
 
 (defn map-indexed
   ```
