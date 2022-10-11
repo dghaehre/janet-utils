@@ -24,7 +24,7 @@
   Run command as fish shell
   ```
   [s]
-  (os/execute @("/usr/bin/fish" "-c" s) :e))
+  (os/execute @("/usr/bin/env" "fish" "-c" s) :e))
 
 (defmacro with-exit
   "Exit if there was an error"
