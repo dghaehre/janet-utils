@@ -59,7 +59,7 @@
   `Return list without head`
   [arr]
   (let [end (length arr)
-        start (if (> end 1) 1 0)]
+        start (if (= end 0) 0 1)]
     (array/slice arr start end)))
 
 (defn map-indexed
